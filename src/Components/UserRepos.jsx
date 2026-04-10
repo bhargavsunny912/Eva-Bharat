@@ -7,6 +7,9 @@ const UserRepos=({setPage,username,repoLoading,repoError,repoData,sort,language,
     
     const [allRepos,setAllRepos]=useState([]);
     const [Fetching,setFetching]=useState(false);
+    const [bookMarks,setBookMarks]=useState(()=>{
+        return JSON.parse(localStorage.getItem("bookmarks"))||[];
+    });
 
     useEffect(()=>{
         if(repoData){
@@ -19,6 +22,21 @@ const UserRepos=({setPage,username,repoLoading,repoError,repoData,sort,language,
             });
         }   
     },[repoData]);
+
+    useEffect(()=>{
+        localStorage.setItem("bookmarks",JSON.stringify(bookMarks));
+    },[bookMarks]);
+
+    const toggleBookMark=(repo)=>{
+        let exist=bookMarks.filter((f)=>f.id === repo.id);
+
+        if(exist.length>0){
+            setBookMarks(bookMarks.filter((f)=>f.id !==repo.id));
+        }
+        else{
+            setBookMarks([...bookMarks,repo]);
+        }
+    }
 
     useEffect(()=>{
         setPage(1);
@@ -80,7 +98,7 @@ const UserRepos=({setPage,username,repoLoading,repoError,repoData,sort,language,
 
             <div className="mx-5 mb-5 flex flex-col gap-5 items-center justify-center">
                 {processedRepos?.map((repo)=>{
-                    return <Repo repo={repo} key={repo.id}/>
+                    return <Repo repo={repo} key={repo.id} isBookMarked={bookMarks.some((s)=>s.id===repo.id)} toggleBookMark={toggleBookMark}/>
                 })}
 
                 {repoLoading && <h1 className="text-lg border top-1/2 left-1/2 absolute -translate-x-1/2 -translate-y-1/2 bg-gray-500 border-gray-500 py-3  px-10 rounded-2xl text-white">Loading Repositories</h1>}

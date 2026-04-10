@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Repo=({repo})=>{
+const Repo=({repo,isBookMarked,toggleBookMark})=>{
     const {id,name,description,stargazers_count,forks_count,html_url}=repo;
 
     return (
@@ -12,6 +12,7 @@ const Repo=({repo})=>{
             <div className="flex items-center justify-start gap-5 flex-wrap">
                 <p>Stars count : {stargazers_count}</p>
                 <p>Forks count : {forks_count}</p>
+                <button onClick={()=>toggleBookMark(repo)}>{isBookMarked?"remove ⭐":"Bookmark ⭐"}</button>
             </div>
             <p>Description : {description || "No description available"}</p>
         </div>
